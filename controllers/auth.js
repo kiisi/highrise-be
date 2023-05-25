@@ -1,6 +1,5 @@
 const UserModel = require("../models/user")
 const validator = require('validator');
-const bcrypt = require("bcrypt");
 const { createJWT } = require("../helpers");
 
 const signup = async (req, res) => {

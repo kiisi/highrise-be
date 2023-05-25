@@ -33,21 +33,23 @@ const userSchema = new mongoose.Schema({
 
 
 userSchema.pre("save", async function(next){
-    const salt = await bcrypt.genSalt()
+    if(this.auth_type === 'password'){
+        const salt = await bcrypt.genSalt(12)
 
-    this.password = await bcrypt.hash(this.password, salt)
+        this.password = await bcrypt.hash(this.password, salt)
+    }
 
     next()
 })
 
 userSchema.statics.login = async function(email, password){
 
-    const user = await UserModel.findOne(email)
+    const user = await this.findOne({email})
 
         if(user){
 
             if(user.auth_type === "password"){
-                let isAuthenticated = await bcrypt.compare(user.password, password)
+                let isAuthenticated = await bcrypt.compare(password, user.password)
                 if(isAuthenticated){
                     user.password = undefined
                     return user

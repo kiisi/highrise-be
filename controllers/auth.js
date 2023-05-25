@@ -21,7 +21,7 @@ const signup = async (req, res) => {
                 return res.status(404).json({ error: "Invalid Email" })
             }
             const new_user = await UserModel.create({full_name, email, password, auth_type})
-            console.log(new_user)
+            new_user.password = undefined
 
             return res.status(201).json({success: "Account Created", data: new_user})
 
@@ -36,16 +36,16 @@ const signup = async (req, res) => {
             }
 
             const new_user = await UserModel.create({full_name, email, auth_type})
-            console.log(new_user)
+            new_user.password = undefined
 
             return res.status(201).json({success: "Account Created", data: new_user})
         }
     } catch (err) {
         if(err.code === 11000){
             return res.status(404).json({ error: "Email already exists" })
-        }else{
-            return res.status(500).json({error: "An error occurred!"})
         }
+        console.log(err)
+        return res.status(500).json({error: "An error occurred!"})
     }
 }
 
@@ -56,21 +56,23 @@ const login = async (req, res) =>{
         let { email, password } = req.body
 
         let user = await UserModel.login(email, password)
-        let tk = createJWT(user._id)
+        let _tk = createJWT(user._id)
 
-        res.cookie('__Secure-jwt', _tk, {
+        res.cookie('jwt', _tk, {
             maxAge: 24 * 60 * 60 * 1000, 
             httpOnly: true,
             secure: true,
             sameSite: 'none',
         })
 
-        return user
+        return res.status(200).json({success: "Login Successful", data: user})
         
     }catch(err){
-        if(err === "account not found"){
+        
+        if(err.message === "account not found"){
             return res.status(400).json({error:"Account not found!"})
         }
+        
         return res.status(500).json({error:"An error occurred!"})
         
     }

@@ -58,7 +58,7 @@ const login = async (req, res) =>{
         let user = await UserModel.login(email, password)
         let _tk = createJWT(user._id)
 
-        res.cookie('jwt', _tk, {
+        res.cookie('__Secure-jwt', _tk, {
             maxAge: 24 * 60 * 60 * 1000, 
             httpOnly: true,
             secure: true,

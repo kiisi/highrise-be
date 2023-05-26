@@ -1,6 +1,7 @@
 const UserModel = require("../models/user")
 const validator = require('validator');
 const { createJWT } = require("../helpers");
+const jwt = require("jsonwebtoken")
 
 const signup = async (req, res) => {
 
@@ -58,7 +59,7 @@ const login = async (req, res) =>{
         let user = await UserModel.login(email, password)
         let _tk = createJWT(user._id)
 
-        res.cookie('__Secure-jwt', _tk, {
+        res.cookie('jwt', _tk, {
             maxAge: 24 * 60 * 60 * 1000, 
             httpOnly: true,
             secure: true,
@@ -78,7 +79,43 @@ const login = async (req, res) =>{
     }
 }
 
+const verifyUser = (req, res, next) =>{
+    const token = req.cookies['jwt']
+    if(token){
+        jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decodedToken) =>{
+            if(err){
+                console.log(err)
+                res.status(403).json({error: "Unauthorized"})
+            }else{
+                let user = await UserModel.findById(decodedToken.id);
+                if(user){
+                    user.password = undefined
+                    res.status(200).json({success: 'Authorized', data: user})
+                }else{
+                    res.status(401).json({error: 'Unauthorized', data: user})
+                }
+                next()
+            }
+        })
+    }else{
+        res.status(401).json({error: "Unauthorized"})
+        next()
+    }
+}
+
+const logout = (req, res) =>{
+    res.cookie('jwt', ' ', {
+        maxAge: 1, 
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+    })
+    res.status(200).json({success: true})
+}
+
 module.exports = {
     signup,
-    login
+    login,
+    verifyUser,
+    logout
 }

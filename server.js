@@ -27,12 +27,19 @@ mongoose.connect(process.env.MONGODB_URI)
 .catch(error => console.log(error))
 
 app.use(express.json())
-
+app.use(express.urlencoded({extended: true}));
 
 // Auth Route
 
 app.use('/auth', require("./routes/auth"))
 
+// Documents Route
+
+app.use('/documents', require("./routes/documents"))
+
+// Payment Verification
+
+app.use('/payment', require("./routes/payment"))
 
 app.get('/', (req, res) => {
     res.send('Welcome to server!')

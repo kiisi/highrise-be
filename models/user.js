@@ -42,24 +42,27 @@ userSchema.pre("save", async function(next){
     next()
 })
 
-userSchema.statics.login = async function(email, password){
+userSchema.statics.login = async function(email, password, auth_type){
 
-    const user = await this.findOne({email})
+    console.log(email, password, auth_type)
+    const user = await this.findOne({email, auth_type})
+    console.log(user)
 
         if(user){
 
-            if(user.auth_type === "password"){
+            if(auth_type === "password" && user.auth_type === "password"){
                 let isAuthenticated = await bcrypt.compare(password, user.password)
                 if(isAuthenticated){
                     user.password = undefined
                     return user
                 }
+                console.log(isAuthenticated)
                 throw Error("account not found")
-            }
-
-            if(user.auth_type === "google"){
+            }else if(auth_type === "google" && user.auth_type === "google"){
                 user.password = undefined
                 return user
+            }else{
+                throw Error("account not found")
             }
 
         }else{

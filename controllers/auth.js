@@ -54,9 +54,22 @@ const signup = async (req, res) => {
 const login = async (req, res) =>{
 
     try{
-        let { email, password } = req.body
+        let { email, password, auth_type } = req.body
 
-        let user = await UserModel.login(email, password)
+        if(auth_type === "password"){
+
+            // Validate Email
+            if (!validator.isEmail(email)) {
+                return res.status(404).json({ error: "Invalid Email" })
+            }
+            
+            // Validate Password
+            if(password.trim() === ''){
+                return res.status(404).json({ error: "Password is required!" })
+            }
+        }
+
+        let user = await UserModel.login(email, password, auth_type)
         let _tk = createJWT(user._id)
 
         res.cookie('jwt', _tk, {

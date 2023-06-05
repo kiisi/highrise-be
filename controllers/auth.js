@@ -85,20 +85,20 @@ const verifyUser = (req, res, next) =>{
         jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decodedToken) =>{
             if(err){
                 console.log(err)
-                res.status(403).json({error: "Unauthorized"})
+                res.status(200).json({error: "Unauthorized"})
             }else{
                 let user = await UserModel.findById(decodedToken.id);
                 if(user){
                     user.password = undefined
                     res.status(200).json({success: 'Authorized', data: user})
                 }else{
-                    res.status(401).json({error: 'Unauthorized', data: user})
+                    res.status(200).json({error: 'Unauthorized', data: user})
                 }
                 next()
             }
         })
     }else{
-        res.status(401).json({error: "Unauthorized"})
+        res.status(200).json({error: "Unauthorized"})
         next()
     }
 }

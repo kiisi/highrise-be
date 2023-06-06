@@ -1,24 +1,17 @@
 const mongoose = require("mongoose")
-const { ObjectId } = mongoose.Schema.Types
 
 const otpSchema = new mongoose.Schema({
-    user:{
-        type: ObjectId,
-        ref: "user",
+    email:{
+        type: String,
         required: true
     },
     otp: {
         type: String,
         required: true
     },
-    verification_mode: {
-        type: String,
-        required: true,
-        enum: ["email"]
-    },
-    verified: {
-        type: Boolean,
-        default: false
+    expires_at:{
+        type: Date,
+        required: true
     }
 }, {timestamps: true})
 

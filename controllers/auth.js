@@ -22,10 +22,10 @@ const signup = async (req, res) => {
             if (!validator.isEmail(email)) {
                 return res.status(404).json({ error: "Invalid Email" })
             }
-            const new_user = await UserModel.create({full_name, email, password, auth_type})
+            let new_user = await UserModel.create({full_name, email, password, auth_type})
             new_user.password = undefined
 
-            return res.status(201).json({success: "Account Created", data: new_user})
+            return res.status(201).json({success: "Account Created", data:{email: new_user, verified_email: new_user.verified_email } })
 
         } else {
             if (!full_name, !email) {
@@ -37,9 +37,9 @@ const signup = async (req, res) => {
                 return res.status(404).json({ error: "Invalid Email" })
             }
 
-            await UserModel.create({full_name, email, auth_type})
+            let new_user = await UserModel.create({full_name, email, auth_type})
 
-            return res.status(201).json({success: "Account Created", verification: false})
+            return res.status(201).json({success: "Account Created", data:{email: new_user.email, verified_email: new_user.verified_email } })
         }
     } catch (err) {
         if(err.code === 11000){

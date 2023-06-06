@@ -42,37 +42,6 @@ userSchema.pre("save", async function(next){
     next()
 })
 
-userSchema.statics.login = async function(email, password, auth_type){
-
-    const user = await this.findOne({email, auth_type})
-
-        if(user){
-
-            if(auth_type === "password" && user.auth_type === "password"){
-                let isAuthenticated = await bcrypt.compare(password, user.password)
-                if(isAuthenticated){
-
-                    if(user.verified_email){
-                        user.password = undefined
-                        return user
-                    }else{
-                        return res.status(403).json({error: "Account has not been verified!", verification: false})
-                    }
-                    
-                }
-                throw Error("account not found")
-            }else if(auth_type === "google" && user.auth_type === "google"){
-                user.password = undefined
-                return user
-            }else{
-                throw Error("account not found")
-            }
-
-        }else{
-            throw Error("account not found")
-        }
-}
-
 const userModel = mongoose.model("user", userSchema)
 
 module.exports = userModel

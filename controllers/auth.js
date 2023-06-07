@@ -22,7 +22,7 @@ const signup = async (req, res) => {
             if (!validator.isEmail(email)) {
                 return res.status(404).json({ error: "Invalid Email" })
             }
-            
+
             // Check if email exist
             let emailExist = await UserModel.findOne({ email })
 
@@ -234,7 +234,7 @@ const sendOtp = async (req, res) => {
             const otp_expiry = Date.now() + 120000
 
             await otpModel.create({ email, otp, expires_at: otp_expiry })
-            sendOtpEmail(email, otp)
+            await sendOtpEmail(email, otp)
 
             return res.status(200).json({ success: `Otp sent to ${email}` })
         }

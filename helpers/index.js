@@ -27,7 +27,16 @@ const initTransporter = async () => {
 const sendOtpEmail = async ( email, otp_code ) => {
 
     try{
-        const transporter = await initTransporter();
+        // const transporter = await initTransporter();
+        const transporter = createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
+            auth: {
+                user: "destinyfelixkiisi@gmail.com",
+                pass: "fyisctvtdbewnekx",
+            },
+        });
         const info = await transporter.sendMail({
             from: "destinyfelixkiisi@gmail.com",
             to: email,

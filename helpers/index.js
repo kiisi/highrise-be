@@ -24,18 +24,22 @@ const initTransporter = async () => {
     return transporter;
 };
 
-const sendOtpEmail = async ( email, otp_code ) => {
+const sendOtpEmail = async (email, otp_code) => {
 
-    try{
+    try {
         // const transporter = await initTransporter();
         const transporter = createTransport({
             host: "smtp.gmail.com",
+            service: "gmail",
             port: 465,
             secure: true,
             auth: {
                 user: "destinyfelixkiisi@gmail.com",
                 pass: "fyisctvtdbewnekx",
             },
+            tls: {
+                rejectUnauthorized: false
+            }
         });
         const info = await transporter.sendMail({
             from: "destinyfelixkiisi@gmail.com",
@@ -58,10 +62,10 @@ const sendOtpEmail = async ( email, otp_code ) => {
           </div>
           `,
         });
-    }catch(err){
+    } catch (err) {
         console.log(err)
     }
-    
+
 };
 
 

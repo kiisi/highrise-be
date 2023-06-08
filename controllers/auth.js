@@ -226,7 +226,7 @@ const sendOtp = async (req, res) => {
 
             } else {
 
-                const otp_expiry = Date.now() + 120000
+                const otp_expiry = Date.now() + 600000
 
                 await otpModel.create({ email, otp, expires_at: otp_expiry })
                 sendOtpEmail(email, otp)
@@ -236,7 +236,7 @@ const sendOtp = async (req, res) => {
 
         } else {
 
-            const otp_expiry = Date.now() + 120000
+            const otp_expiry = Date.now() + 600000
 
             await otpModel.create({ email, otp, expires_at: otp_expiry })
             await sendOtpEmail(email, otp)

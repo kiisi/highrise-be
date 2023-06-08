@@ -3,6 +3,7 @@ const validator = require('validator');
 const { createJWT, sendOtpEmail } = require("../helpers");
 const jwt = require("jsonwebtoken");
 const otpModel = require("../models/otp");
+const bcrypt = require("bcrypt")
 
 const signup = async (req, res) => {
 
@@ -148,6 +149,7 @@ const login = async (req, res) => {
         if (err.message === "account not found") {
             return res.status(400).json({ error: "Account not found!" })
         }
+        console.log(err)
 
         return res.status(500).json({ error: "An error occurred!" })
 

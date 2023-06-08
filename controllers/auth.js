@@ -33,7 +33,7 @@ const signup = async (req, res) => {
             let new_user = await UserModel.create({ full_name, email, password, auth_type })
             new_user.password = undefined
 
-            return res.status(201).json({ success: "Account Created", data: { email: new_user, verified_email: new_user.verified_email } })
+            return res.status(201).json({ success: "Account Created", data: { email: new_user.email, verified_email: new_user.verified_email } })
 
         } else {
             if (!full_name, !email) {
@@ -196,6 +196,11 @@ const sendOtp = async (req, res) => {
 
     if (!email) {
         return res.status(403).json({ error: "Email is required for verification!" })
+    }
+
+    // Validate Email
+    if (!validator.isEmail(email)) {
+        return res.status(404).json({ error: "Invalid Email" })
     }
 
     function getRandomInt(min, max) {

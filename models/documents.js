@@ -28,6 +28,10 @@ const ChangeNameSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    nin: {
+        type: Number,
+        required: true
+    },
     passport: {
         type: String,
         required: true
@@ -68,6 +72,10 @@ const LossDocsSchema = new mongoose.Schema({
         required: true
     },
     amount: {
+        type: Number,
+        required: true
+    },
+    nin: {
         type: Number,
         required: true
     },
@@ -116,6 +124,10 @@ const PublicNoticeSchema = new mongoose.Schema({
         required: true
     },
     amount: {
+        type: Number,
+        required: true
+    },
+    nin: {
         type: Number,
         required: true
     },
@@ -168,6 +180,10 @@ const AffidavitSchema = new mongoose.Schema({
         required: true
     },
     amount: {
+        type: Number,
+        required: true
+    },
+    nin: {
         type: Number,
         required: true
     },

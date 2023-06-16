@@ -11,19 +11,6 @@ const createJWT = (id) => {
 
 // Send otp using nodemailer
 
-const initTransporter = async () => {
-    const transporter = createTransport({
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
-        auth: {
-            user: "destinyfelixkiisi@gmail.com",
-            pass: "fyisctvtdbewnekx",
-        },
-    });
-    return transporter;
-};
-
 const sendOtpEmail = async (email, otp_code) => {
 
     try {
@@ -41,7 +28,7 @@ const sendOtpEmail = async (email, otp_code) => {
                 rejectUnauthorized: false
             }
         });
-        const info = await transporter.sendMail({
+        await transporter.sendMail({
             from: "destinyfelixkiisi@gmail.com",
             to: email,
             subject: "Highrise Email Verification",
@@ -69,5 +56,8 @@ const sendOtpEmail = async (email, otp_code) => {
 };
 
 
+const serviceIdCodeGenerator = (serviceId) =>{
+    return `HIGHRISE-${serviceId}`;
+}
 
-module.exports = { createJWT, sendOtpEmail }
+module.exports = { createJWT, sendOtpEmail, serviceIdCodeGenerator }

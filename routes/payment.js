@@ -9,4 +9,8 @@ router.post('/checkout/public-notice', paymentController.publicNoticePaymentVeri
 
 router.post('/checkout/affidavit', paymentController.affidavitPaymentVerification)
 
+router.post('/checkout/verification', paymentController.verifyCode)
+
+router.post('/checkout/verification-payment', paymentController.verifyPayment)
+
 module.exports = router

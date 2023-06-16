@@ -41,6 +41,11 @@ app.use('/documents', require("./routes/documents"))
 
 app.use('/payment', require("./routes/payment"))
 
+// Notification
+
+app.use(require("./routes/notification"))
+
+
 app.get('/', (req, res) => {
     res.send('Welcome to server!')
 })

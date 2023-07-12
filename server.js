@@ -10,7 +10,7 @@ dotenv.config()
 app.set("trust proxy", 1);
 app.use(cookieParser())
 const corsOption = {
-    origin: ['http://localhost:5173', 'https://highriseweb.netlify.app'],
+    origin: ['http://localhost:5173', 'https://highriseweb.netlify.app', "https://high-risenews.ng"],
     // origin: 'https://highriseweb.netlify.app',
     credentials:true,
     optionsSuccessStatus: 200

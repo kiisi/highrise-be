@@ -1,5 +1,6 @@
-const router = require("express").Router()
-const documentsController = require("../controllers/documents")
+import express from "express"
+const router = express.Router()
+import * as documentsController from "../controllers/documents.js"
 
 
 /*
@@ -9,6 +10,14 @@ const documentsController = require("../controllers/documents")
 */
 
 router.post("/change-of-name/uploads", documentsController.changeName)
+
+/*
+ * @route POST /documents/correction-of-name-age/uploads
+ * @access public
+ * @returns {object} 
+*/
+
+router.post("/correction-of-name-age/uploads", documentsController.correctionNameAge)
 
 /*
  * @route POST /documents/loss-of-docs/uploads
@@ -34,4 +43,4 @@ router.post("/public-notice/uploads", documentsController.publicNotice)
 
 router.post("/affidavit/uploads", documentsController.affidavit)
 
-module.exports = router
+export default router

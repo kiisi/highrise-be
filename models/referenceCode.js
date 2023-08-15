@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose"
 const { ObjectId } = mongoose.Schema.Types
 
 const referenceCodeSchema = new mongoose.Schema({
@@ -27,6 +27,6 @@ const referenceCodeSchema = new mongoose.Schema({
     }
 }, { timestamps: true })
 
-const referenceCodeModel = mongoose.model("referenceCode", referenceCodeSchema)
+const ReferenceCodeModel = mongoose.model("referenceCode", referenceCodeSchema)
 
-module.exports = referenceCodeModel
+export { ReferenceCodeModel }

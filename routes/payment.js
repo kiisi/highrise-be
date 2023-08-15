@@ -1,7 +1,11 @@
-const router = require("express").Router()
-const paymentController = require("../controllers/payment")
+import express from "express"
+const router = express.Router()
+import * as paymentController from "../controllers/payment.js"
+
 
 router.post('/checkout/change-of-name', paymentController.changeNamePaymentVerification)
+
+router.post('/checkout/correction-of-name-age', paymentController.correctionNameAgePaymentVerification)
 
 router.post('/checkout/loss-of-docs', paymentController.lossDocsPaymentVerification)
 
@@ -13,4 +17,4 @@ router.post('/checkout/verification', paymentController.verifyCode)
 
 router.post('/checkout/verification-payment', paymentController.verifyPayment)
 
-module.exports = router
+export default router

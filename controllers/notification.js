@@ -1,4 +1,4 @@
-const NotificationModel = require("../models/notification")
+import { NotificationModel } from "../models/notification.js"
 
 const notify = async (req, res) => {
 
@@ -18,4 +18,4 @@ const notify = async (req, res) => {
 
 }
 
-module.exports = { notify }
+export { notify }

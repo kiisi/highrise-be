@@ -1,10 +1,15 @@
-const express = require('express')
+import express from 'express'
 const app = express()
-const cors = require('cors')
-const logger = require("morgan")
-const dotenv = require('dotenv')
-const mongoose = require('mongoose')
-const cookieParser = require('cookie-parser')
+import cors from 'cors'
+import logger from "morgan"
+import dotenv from 'dotenv'
+import mongoose from 'mongoose'
+import cookieParser from 'cookie-parser'
+
+import auth from "./routes/auth.js"
+import documents from "./routes/documents.js"
+import payment from "./routes/payment.js"
+import notification from "./routes/notification.js"
 
 dotenv.config()
 app.set("trust proxy", 1);
@@ -31,19 +36,19 @@ app.use(express.urlencoded({extended: true}));
 
 // Auth Route
 
-app.use('/auth', require("./routes/auth"))
+app.use('/auth', auth)
 
 // Documents Route
 
-app.use('/documents', require("./routes/documents"))
+app.use('/documents', documents)
 
 // Payment Verification
 
-app.use('/payment', require("./routes/payment"))
+app.use('/payment', payment)
 
 // Notification
 
-app.use(require("./routes/notification"))
+app.use(notification)
 
 
 app.get('/', (req, res) => {

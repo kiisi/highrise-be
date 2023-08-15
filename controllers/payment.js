@@ -1,7 +1,7 @@
-const { serviceIdCodeGenerator } = require("../helpers");
-const { ChangeNameModel, LossDocsModel, PublicNoticeModel, AffidavitModel } = require("../models/documents")
-const NotificationModel = require('../models/notification')
-const ReferenceCodeModel = require("../models/referenceCode")
+import { serviceIdCodeGenerator } from "../helpers/index.js"
+import { ChangeNameModel, LossDocsModel, PublicNoticeModel, AffidavitModel, CorrectionNameAgeModel } from "../models/documents.js"
+import { NotificationModel } from '../models/notification.js'
+import { ReferenceCodeModel } from "../models/referenceCode.js"
 
 const changeNamePaymentVerification = async (req, res) =>{
 
@@ -12,9 +12,39 @@ const changeNamePaymentVerification = async (req, res) =>{
             user_payment: true,
         });
 
-        const serviceIdCode = serviceIdCodeGenerator(serviceId)
+        const data = await ChangeNameModel.findOne({ _id: serviceId })
 
-        const message = `You have successfully completed your Change Of Name process. Your verification ID is ${serviceIdCode}.`;
+        const serviceIdCode = data.docs_ref 
+
+        const message = `You have successfully completed your Change Of Name process. Your verification ID is ${serviceIdCode}`;
+
+        await NotificationModel.create({ user: userId, service: serviceId, service_id_code: serviceIdCode , message: message })
+        
+        await ReferenceCodeModel.create({ user: userId, reference_code: serviceIdCode, service_type: "change-of-name", service: serviceId })
+
+        res.status(200).json({success: true})
+
+    }catch(err){
+        console.log(err)
+        res.status(400).json({error: "Encountered an error!"})
+    }
+    
+}
+
+const correctionNameAgePaymentVerification = async (req, res) =>{
+
+    const { userId, serviceId } = req.body
+
+    try {
+        await CorrectionNameAgeModel.updateOne({ _id: serviceId }, {
+            user_payment: true,
+        });
+
+        const data = await CorrectionNameAgeModel.findOne({ _id: serviceId })
+
+        const serviceIdCode = data.docs_ref
+
+        const message = `You have successfully completed your Correction Of Name/Age process. Your verification ID is ${serviceIdCode}`;
 
         await NotificationModel.create({ user: userId, service: serviceId, service_id_code: serviceIdCode , message: message })
         
@@ -33,15 +63,16 @@ const lossDocsPaymentVerification = async (req, res) =>{
 
     const { userId, serviceId } = req.body
 
-
     try {
         await LossDocsModel.updateOne({ _id: serviceId }, {
             user_payment: true,
         });
 
-        const serviceIdCode = serviceIdCodeGenerator(serviceId)
+        const data = await LossDocsModel.findOne({ _id: serviceId })
 
-        const message = `You have successfully completed your Loss of Document process. Your verification ID is ${serviceIdCode}.`;
+        const serviceIdCode = data.docs_ref
+
+        const message = `You have successfully completed your Loss of Document process. Your verification ID is ${serviceIdCode}`;
 
         await NotificationModel.create({ user: userId, service: serviceId, service_id_code: serviceIdCode , message: message })
     
@@ -62,13 +93,15 @@ const publicNoticePaymentVerification = async (req, res) =>{
 
 
     try {
-        const data = await PublicNoticeModel.updateOne({ _id: serviceId }, {
+        await PublicNoticeModel.updateOne({ _id: serviceId }, {
             user_payment: true,
         });
         
-        const serviceIdCode = serviceIdCodeGenerator(serviceId)
+        const data = await PublicNoticeModel.findOne({ _id: serviceId })
 
-        const message = `You have successfully completed your Public Notice process. Your verification ID is ${serviceIdCode}.`;
+        const serviceIdCode = data.docs_ref
+
+        const message = `You have successfully completed your Public Notice process. Your verification ID is ${serviceIdCode}`;
 
         await NotificationModel.create({ user: userId, service: serviceId, service_id_code: serviceIdCode , message: message })
         
@@ -93,9 +126,11 @@ const affidavitPaymentVerification = async (req, res) =>{
             user_payment: true,
         });
         
-        const serviceIdCode = serviceIdCodeGenerator(serviceId)
+        const data = await AffidavitModel.findOne({ _id: serviceId })
 
-        const message = `You have successfully completed your Swear of Afidavit process. Your verification ID is ${serviceIdCode}.`;
+        const serviceIdCode = data.docs_ref
+
+        const message = `You have successfully completed your Swear of Afidavit process. Your verification ID is ${serviceIdCode}`;
 
         await NotificationModel.create({ user: userId, service: serviceId, service_id_code: serviceIdCode , message: message })
         
@@ -163,11 +198,12 @@ const verifyPayment = async (req, res) =>{
     
 }
 
-module.exports = {
+export {
     changeNamePaymentVerification,
     lossDocsPaymentVerification,
     publicNoticePaymentVerification,
     affidavitPaymentVerification,
+    correctionNameAgePaymentVerification,
     verifyCode,
     verifyPayment
 }

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose"
 const { ObjectId } = mongoose.Schema.Types
 
 const notificationSchema = new mongoose.Schema({
@@ -20,6 +20,6 @@ const notificationSchema = new mongoose.Schema({
     },
 }, {timestamps: true})
 
-const notificationModel = mongoose.model("notification", notificationSchema)
+const NotificationModel = mongoose.model("notification", notificationSchema)
 
-module.exports = notificationModel
+export { NotificationModel }

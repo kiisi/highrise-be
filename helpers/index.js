@@ -1,5 +1,6 @@
-const jwt = require("jsonwebtoken");
-const { createTransport } = require("nodemailer");
+import jwt from "jsonwebtoken";
+import { createTransport } from "nodemailer";
+import { customAlphabet } from 'nanoid'
 
 // Create JWT Token
 
@@ -60,4 +61,10 @@ const serviceIdCodeGenerator = (serviceId) =>{
     return `HIGHRISE-${serviceId}`;
 }
 
-module.exports = { createJWT, sendOtpEmail, serviceIdCodeGenerator }
+const docsRefGenerator = () =>{
+    const ref = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 10)()
+
+    return `ref-${ref}`;
+}
+
+export { createJWT, sendOtpEmail, serviceIdCodeGenerator, docsRefGenerator }

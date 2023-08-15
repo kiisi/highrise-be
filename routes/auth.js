@@ -1,5 +1,6 @@
-const router = require("express").Router()
-const authController = require("../controllers/auth")
+import express from "express"
+const router = express.Router()
+import * as authController from "../controllers/auth.js"
 
 /*
  * @route POST /auth/signup
@@ -51,4 +52,4 @@ router.post("/send-otp", authController.sendOtp)
 
 router.post("/verify-otp", authController.verifyOtp)
 
-module.exports = router
+export default router

@@ -1,9 +1,9 @@
-const UserModel = require("../models/user")
-const validator = require('validator');
-const { createJWT, sendOtpEmail } = require("../helpers");
-const jwt = require("jsonwebtoken");
-const otpModel = require("../models/otp");
-const bcrypt = require("bcrypt")
+import validator from 'validator';
+import jwt from "jsonwebtoken";
+import { UserModel } from "../models/user.js"
+import { OtpModel } from "../models/otp.js";
+import bcrypt from "bcrypt"
+import { createJWT, sendOtpEmail } from '../helpers/index.js';
 
 const signup = async (req, res) => {
 
@@ -107,7 +107,7 @@ const login = async (req, res) => {
                             sameSite: 'none',
                         })
 
-                        return res.status(200).json({ success: "Login Successful", verified_email: true })
+                        return res.status(200).json({ success: "Login Successful", verified_email: true, data: user })
                         
                     } else {
                         return res.status(403).json({ error: "Account has not been verified!", verified_email: false, data: { email: user.email } })
@@ -214,7 +214,7 @@ const sendOtp = async (req, res) => {
     try {
 
         const otp = getRandomInt(1000, 10000)
-        const recentOtps = await otpModel.find({ email })
+        const recentOtps = await OtpModel.find({ email })
 
         if (recentOtps.length !== 0) {
 
@@ -230,7 +230,7 @@ const sendOtp = async (req, res) => {
 
                 const otp_expiry = Date.now() + 600000
 
-                await otpModel.create({ email, otp, expires_at: otp_expiry })
+                await OtpModel.create({ email, otp, expires_at: otp_expiry })
                 sendOtpEmail(email, otp)
 
                 return res.status(200).json({ success: `Otp sent to ${email}` })
@@ -240,7 +240,7 @@ const sendOtp = async (req, res) => {
 
             const otp_expiry = Date.now() + 600000
 
-            await otpModel.create({ email, otp, expires_at: otp_expiry })
+            await OtpModel.create({ email, otp, expires_at: otp_expiry })
             await sendOtpEmail(email, otp)
 
             return res.status(200).json({ success: `Otp sent to ${email}` })
@@ -273,7 +273,7 @@ const verifyOtp = async (req, res) => {
 
         if (user) {
 
-            const otpData = await otpModel.find({ email })
+            const otpData = await OtpModel.find({ email })
 
             if (otp === otpData[otpData.length - 1].otp) {
                 await UserModel.updateOne({ email }, {
@@ -295,8 +295,7 @@ const verifyOtp = async (req, res) => {
 }
 
 
-
-module.exports = {
+export {
     signup,
     login,
     verifyUser,

@@ -5,7 +5,7 @@ const notify = async (req, res) => {
     try {
         const { id } = req.body
 
-        const data = await NotificationModel.find({ user: id })
+        const data = await NotificationModel.find({ user: id }).sort({"createdAt": -1})
 
         console.log(data)
 

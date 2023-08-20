@@ -145,7 +145,8 @@ const affidavitPaymentVerification = async (req, res) =>{
     
 }
 
-const verifyCode = async (req, res) =>{
+const verifyCode = async (req, res) => {
+
     const { reference_code } = req.body
 
     try{
@@ -160,10 +161,10 @@ const verifyCode = async (req, res) =>{
         data.user.password = undefined
 
         if(data.verified_reference_code){
-            return res.status(403).json({warn: "Already verified", data: data})
+            return res.status(200).json({warn: "Reverification cost ₦500", data, cost: 500})
         }
 
-        return res.status(200).json({success: "Reference code is valid", data: data})
+        return res.status(200).json({success: "Reference code is valid", data, cost: 1000})
 
     }catch(err){
         console.log("An unexpected error occurred!", err)
@@ -175,15 +176,6 @@ const verifyPayment = async (req, res) =>{
     const { reference_code } = req.body
 
     try {
-        const data = await ReferenceCodeModel.findOne({reference_code: reference_code})
-
-        if(!data){
-            return res.status(403).json({error: "Invalid reference code"})
-        }
-
-        if(data.verified_reference_code){
-            return res.status(403).json({error: "Already verified"})
-        }
 
         await ReferenceCodeModel.updateOne({ reference_code: reference_code }, {
             verified_reference_code: true,

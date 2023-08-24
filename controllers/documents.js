@@ -22,8 +22,8 @@ const changeName = async (req, res) =>{
 
     try{
         
-        if(parseInt(amount) !== 4500){
-            return res.status(401).json({error: "Change of name fee is ₦5,000"})
+        if(parseInt(amount) !== 3000){
+            return res.status(401).json({error: "Change of name fee is ₦3,000"})
         }
         
         const docs_ref = docsRefGenerator()
@@ -43,13 +43,10 @@ const correctionNameAge = async (req, res) =>{
 
     const { user, old_name, new_name, confirm_new_name, email, phone_number, amount, passport, birth, affidavit, identification, nin} =  req.body
 
-    console.log("Hi-")
-
     if(!user || !old_name || !new_name || !confirm_new_name || !email || !phone_number || !amount || !passport || !birth || !affidavit || !identification || !nin){
         return res.status(401).json({error: "All fields are required!"})
     }
 
-    console.log("Hi")
     if(new_name !== confirm_new_name){
         return res.status(401).json({error: "New name confirmation failed!"})
     }

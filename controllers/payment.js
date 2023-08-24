@@ -164,7 +164,7 @@ const verifyCode = async (req, res) => {
             return res.status(200).json({warn: "Reverification cost ₦500", data, cost: 500})
         }
 
-        return res.status(200).json({success: "Reference code is valid", data, cost: 1000})
+        return res.status(200).json({success: "Reference code is valid", data, cost: 500})
 
     }catch(err){
         console.log("An unexpected error occurred!", err)

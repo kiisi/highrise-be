@@ -23,7 +23,7 @@ const sendOtpEmail = async (email, otp_code) => {
             secure: true,
             auth: {
                 user: "destinyfelixkiisi@gmail.com",
-                pass: "fyisctvtdbewnekx",
+                pass: "tsqgrpevhujqjtqh",
             },
             tls: {
                 rejectUnauthorized: false

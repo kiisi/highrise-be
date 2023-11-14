@@ -27,14 +27,14 @@ const signup = async (req, res) => {
             // Check if email exist
             let emailExist = await UserModel.findOne({ email })
 
-            if(emailExist){
+            if (emailExist) {
                 return res.status(404).json({ error: "Email already exists" })
             }
 
             let new_user = await UserModel.create({ full_name, email, password, auth_type })
             new_user.password = undefined
 
-            return res.status(201).json({ success: "Account Created", data: { email: new_user.email, verified_email: new_user.verified_email } })
+            return res.status(201).json({ success: "Account Created", data: { email: new_user.email, verifiedEmail: new_user.verified_email } })
 
         } else {
             if (!full_name, !email) {
@@ -50,13 +50,13 @@ const signup = async (req, res) => {
 
             let emailExist = await UserModel.findOne({ email })
 
-            if(emailExist){
+            if (emailExist) {
                 return res.status(404).json({ error: "Email already exists" })
             }
 
             let new_user = await UserModel.create({ full_name, email, auth_type })
 
-            return res.status(201).json({ success: "Account Created", data: { email: new_user.email, verified_email: new_user.verified_email } })
+            return res.status(201).json({ success: "Account Created", data: { email: new_user.email, verifiedEmail: new_user.verified_email } })
         }
     } catch (err) {
         console.log(err)
@@ -68,27 +68,25 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
 
     try {
+
         let { email, password, auth_type } = req.body
 
-        if (auth_type === "password") {
-
-            // Validate Email
-            if (!validator.isEmail(email)) {
-                return res.status(404).json({ error: "Invalid Email" })
-            }
-
-            // Validate Password
-            if (password.trim() === '') {
-                return res.status(404).json({ error: "Password is required!" })
-            }
+        // Validate Email
+        if (!validator.isEmail(email)) {
+            return res.status(401).json({ error: "Invalid Email" })
         }
 
-        // let user = await UserModel.login(email, password, auth_type)
-        const user = await UserModel.findOne({ email, auth_type })
 
-        if (user) {
+        // Password Authentication
+        if (auth_type === "password") {
 
-            if (auth_type === "password" && user.auth_type === "password") {
+            if (password.trim() === '') {
+                return res.status(401).json({ error: "Password is required!" })
+            }
+
+            const user = await UserModel.findOne({ email })
+
+            if (user) {
 
                 let isAuthenticated = await bcrypt.compare(password, user.password)
 
@@ -100,49 +98,42 @@ const login = async (req, res) => {
 
                         const _tk = createJWT(user._id)
 
-                        res.cookie('jwt', _tk, {
-                            maxAge: 24 * 60 * 60 * 1000,
-                            httpOnly: true,
-                            secure: true,
-                            sameSite: 'none',
-                        })
+                        return res.status(200).json({ success: "Login Successful", verifiedEmail: true, token: _tk })
 
-                        return res.status(200).json({ success: "Login Successful", verified_email: true, data: user })
-                        
                     } else {
-                        return res.status(403).json({ error: "Account has not been verified!", verified_email: false, data: { email: user.email } })
+                        return res.status(401).json({ error: "Account has not been verified!", verifiedEmail: false, data: { email: user.email } })
                     }
-
                 }
-                throw Error("account not found")
+            }
+        }
 
-            } else if (auth_type === "google" && user.auth_type === "google") {
+        // Google Authentication
+        if (auth_type === "google") {
 
+            const user = await UserModel.findOne({ email })
+
+            if (user) {
                 if (user.verified_email) {
 
                     user.password = undefined
 
                     const _tk = createJWT(user._id)
 
-                    res.cookie('jwt', _tk, {
-                        maxAge: 24 * 60 * 60 * 1000,
-                        httpOnly: true,
-                        secure: true,
-                        sameSite: 'none',
-                    })
-
-                    return res.status(200).json({ success: "Login Successful", verified_email: true })
-
-                } else {
-                    return res.status(403).json({ error: "Account has not been verified!", verified_email: false, data: { email: user.email } })
+                    return res.status(200).json({ success: "Login Successful", verifiedEmail: true, token: _tk })
                 }
-            } else {
-                throw Error("account not found")
+                else {
+                    return res.status(401).json({
+                        error: "Account has not been verified!",
+                        verifiedEmail: false,
+                        data: {
+                            email: user.email
+                        }
+                    })
+                }
             }
-
-        } else {
-            throw Error("account not found")
         }
+
+        throw Error("account not found")
 
     } catch (err) {
 
@@ -152,34 +143,28 @@ const login = async (req, res) => {
         console.log(err)
 
         return res.status(500).json({ error: "An error occurred!" })
-
     }
 }
 
 const verifyUser = (req, res) => {
-    const token = req.cookies['jwt']
-    if (token) {
-        jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decodedToken) => {
-            if (err) {
-                console.log(err)
-                res.status(200).json({ error: "Unauthorized" })
-            } else {
-                let user = await UserModel.findById(decodedToken.id);
-                if (user) {
-                    if (user.verified_email) {
-                        user.password = undefined
-                        return res.status(200).json({ success: 'Authorized', verified_email: true, data: user })
-                    } else {
-                        return res.status(403).json({ error: "Account has not been verified!", verified_email: false, data: { email: user.email } })
-                    }
-                } else {
-                    return res.status(200).json({ error: 'Unauthorized' })
-                }
-            }
-        })
-    } else {
-        return res.status(200).json({ error: "Unauthorized" })
+
+    const user = req.dbUser
+
+    if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' })
     }
+
+    if (!user.verified_email) {
+        user.password = undefined
+        return res.status(401)
+            .json({
+                error: "Account has not been verified!",
+                verifiedEmail: false,
+                data: { email: user.email }
+            })
+    }
+
+    return res.status(200).json({ success: 'Authorized', verifiedEmail: true, data: user })
 }
 
 const logout = (req, res) => {
@@ -267,8 +252,8 @@ const verifyOtp = async (req, res) => {
 
         const user = UserModel.findOne({ email })
 
-        if(user.verified_email){
-            return res.status(200).json({success: "Email has been verified!"})
+        if (user.verified_email) {
+            return res.status(200).json({ success: "Email has been verified!" })
         }
 
         if (user) {

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { UserModel } from "../models/user.js"
 
-const protectedResources = (req, res, next) => {
+export const protectedResources = (req, res, next) => {
 
     //authorization -> Bearer token
 
@@ -17,9 +17,9 @@ const protectedResources = (req, res, next) => {
             return res.status(401).json({error: "Unauthorized"})
         }
 
-        const {_id} = payload;
+        const { id } = payload;
 
-        UserModel.findById(_id)
+        UserModel.findById(id)
         .then(dbUser=>{
             const user = dbUser
             user.password = undefined
@@ -30,5 +30,3 @@ const protectedResources = (req, res, next) => {
         .catch(err=>console.log(err))        
     })
 }
-
-export default protectedResources

@@ -10,6 +10,7 @@ import auth from "./routes/auth.js"
 import documents from "./routes/documents.js"
 import payment from "./routes/payment.js"
 import notification from "./routes/notification.js"
+import { protectedResources } from './middleware/protectedResources.js'
 
 dotenv.config()
 app.set("trust proxy", 1);
@@ -39,11 +40,11 @@ app.use('/auth', auth)
 
 // Documents Route
 
-app.use('/documents', documents)
+app.use('/documents', protectedResources, documents)
 
 // Payment Verification
 
-app.use('/payment', payment)
+app.use('/payment', protectedResources, payment)
 
 // Notification
 

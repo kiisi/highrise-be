@@ -1,6 +1,7 @@
 import express from "express"
 const router = express.Router()
 import * as authController from "../controllers/auth.js"
+import { protectedResources } from "../middleware/protectedResources.js"
 
 /*
  * @route POST /auth/signup
@@ -29,27 +30,11 @@ router.post("/login", authController.login)
  * @access public 
 */
 
-router.get("/verify-user", authController.verifyUser)
+router.get("/verify-user", protectedResources, authController.verifyUser)
 
 /*
  * @route GET /auth/logout
  * @access public
 */
-
-router.get("/logout", authController.logout)
-
-/*
- * @route GET /auth/send-otp
- * @access public
-*/
-
-router.post("/send-otp", authController.sendOtp)
-
-/*
- * @route GET /auth/verify-otp
- * @access public
-*/
-
-router.post("/verify-otp", authController.verifyOtp)
 
 export default router

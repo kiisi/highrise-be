@@ -40,11 +40,11 @@ app.use('/auth', auth)
 
 // Documents Route
 
-app.use('/documents', protectedResources, documents)
+app.use('/documents', documents)
 
 // Payment Verification
 
-app.use('/payment', protectedResources, payment)
+app.use('/payment', payment)
 
 // Notification
 

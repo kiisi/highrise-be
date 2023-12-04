@@ -48,7 +48,7 @@ const correctionNameAgePaymentVerification = async (req, res) =>{
 
         await NotificationModel.create({ user: userId, service: serviceId, service_id_code: serviceIdCode , message: message })
         
-        await ReferenceCodeModel.create({ user: userId, reference_code: serviceIdCode, service_type: "change-of-name", service: serviceId })
+        await ReferenceCodeModel.create({ user: userId, reference_code: serviceIdCode, service_type: "correction-of-name-age", service: serviceId })
 
         res.status(200).json({success: true})
 
@@ -159,6 +159,8 @@ const verifyCode = async (req, res) => {
 
         console.log(data)
         data.user.password = undefined
+
+        console.log(data)
 
         if(data.verified_reference_code){
             return res.status(200).json({warn: "Reverification cost ₦500", data, cost: 500})

@@ -19,7 +19,7 @@ const referenceCodeSchema = new mongoose.Schema({
     service_type: {
         type: String,
         required: true,
-        enum: ["change-of-name", "loss-of-documents", "public-notice", "affidavit"],
+        enum: ["change-of-name", "correction-of-name-age", "loss-of-documents", "public-notice", "affidavit"],
     },
     verified_reference_code: {
         type: Boolean,

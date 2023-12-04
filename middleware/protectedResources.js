@@ -22,7 +22,9 @@ export const protectedResources = (req, res, next) => {
         UserModel.findById(id)
         .then(dbUser=>{
             const user = dbUser
-            user.password = undefined
+            if(user?.password) {
+                user.password = undefined
+            }
             req.dbUser = user
             // forward the request to the next middleware or next route
             next();

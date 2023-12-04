@@ -146,7 +146,6 @@ const login = async (req, res) => {
 const verifyUser = (req, res) => {
 
     const user = req.dbUser
-    console.log(req.dbUser)
 
     if (!user) {
         return res.status(401).json({ error: 'Unauthorized' })

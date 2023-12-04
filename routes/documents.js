@@ -43,4 +43,6 @@ router.post("/public-notice/uploads", documentsController.publicNotice)
 
 router.post("/affidavit/uploads", documentsController.affidavit)
 
+router.get("/all-docs", documentsController.allDocs)
+
 export default router

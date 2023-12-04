@@ -24,10 +24,6 @@ const userSchema = new mongoose.Schema({
         enum: ["google", "password"],
         trim: true,
         required:true
-    },
-    verified_email: {
-        type: Boolean,
-        default: false
     }
 },{timestamps: true})
 
